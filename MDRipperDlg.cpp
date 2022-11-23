@@ -56,7 +56,7 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			DispatchMessage(&msg);
 		}
 	}
-	return msg.wParam;
+	return (int)msg.wParam;
 }
 
 Controller::Controller(HWND hwnd)
