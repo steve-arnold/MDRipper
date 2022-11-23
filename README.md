@@ -4,7 +4,7 @@ It works by decoding the data backup file for LIM 1 so physical access is needed
 
 ## Source code
 
-This repository contains the source code files to build tha applicatio and data files:
+This repository contains the source code files to build that application and data files:
 
 * `L001.bc10`       - A LIM 1 data file for the BC10 release.
 * `L001.bc13`       - A LIM 1 data file for the BC13 release.
