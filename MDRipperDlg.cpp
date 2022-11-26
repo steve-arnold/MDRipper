@@ -12,7 +12,7 @@ int NewHandler(size_t size)
 // Forward declarations of functions included in this code module:
 INT_PTR CALLBACK DialogProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
-VOID CALLBACK ReadCb(DWORD dwErrorCode, DWORD dwNumberOfBytesTransfered, LPOVERLAPPED lpOverlapped);
+VOID CALLBACK ReadCb(DWORD, DWORD, LPOVERLAPPED);
 
 INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -59,15 +59,15 @@ INT WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	return (int)msg.wParam;
 }
 
-Controller::Controller(HWND hwnd)
-	: m_eOutput(hwnd, IDC_EDIT2, FALSE),
+Controller::Controller(HWND hwnd): 
+	m_eOutput(hwnd, IDC_EDIT2, FALSE),
 	m_bClose(hwnd, IDOK),
 	m_bLoad(hwnd, IDC_LOAD),
 	m_rRipper(&m_eOutput)
 {
 	// set fixed font to make output columns neat
-	HGDIOBJ hfDefault = GetStockObject(OEM_FIXED_FONT);
-	SendMessage(m_eOutput.Hwnd(), WM_SETFONT, reinterpret_cast<WPARAM>(hfDefault), MAKELPARAM(FALSE, 0));
+	HFONT hFont = (HFONT)GetStockObject(SYSTEM_FIXED_FONT);
+	SendMessage(m_eOutput.Hwnd(), WM_SETFONT, reinterpret_cast<WPARAM>(hFont), MAKELPARAM(FALSE, 0));
 }
 
 void Controller::Command(HWND hwnd, int controlID, int command)
@@ -91,7 +91,7 @@ void Controller::FileOpen(HWND hwnd)
 
 		HANDLE		hf;
 		OPENFILENAME ofn;      // common dialog box structure
-		char szFile[260];      // buffer for file name
+		char szFile[260]{};      // buffer for file name
 		hf = INVALID_HANDLE_VALUE;    // file handle
 
 		// Initialize OPENFILENAME
@@ -129,7 +129,7 @@ void Controller::FileOpen(HWND hwnd)
 	}
 	catch (ErrorClass error)
 	{
-		LPVOID lpMsgBuf;
+		LPVOID lpMsgBuf = NULL;
 		char title[255];
 		DWORD dwFlags;       // source and processing options
 		LPCVOID lpSource;    // pointer to  message source
@@ -274,7 +274,7 @@ void Ripper::FileLoad(HANDLE hf)
 
 bool Ripper::GetFilePointers(HANDLE hf)
 {
-	OVERLAPPED bytesread;
+	OVERLAPPED bytesread{};
 	bool flag = false;
 	pointDST = 0;
 	point3 = 0xFFFFFFFF;
@@ -311,9 +311,9 @@ bool Ripper::GetFilePointers(HANDLE hf)
 
 bool Ripper::GetICM(HANDLE hf)
 {
-	OVERLAPPED bytesread;
+	OVERLAPPED bytesread{};
 	//PU 18 = ICM, PU 19 = PFM. PU 18 ends where PU 19 begins
-	DWORD temp, PuICMPointer, PuPFMPointer;
+	DWORD temp = 0, PuICMPointer = 0, PuPFMPointer = 0;
 	bool flag = false;
 
 	if (GetFileSizeEx(hf, &pointEOF))
@@ -356,8 +356,8 @@ void Ripper::LoadICMFile(HANDLE hf, DWORD start, DWORD end)
 	char  temppath[MAX_PATH];
 	HANDLE tf = INVALID_HANDLE_VALUE;
 	DWORD errorword;
-	WORD  buff;
-	BYTE  loop;
+	WORD  buff{};
+	BYTE  loop{};
 
 	// get the Temp file path name - default to the current directory
 	if (GetTempPath(MAX_PATH, temppath))
@@ -383,7 +383,7 @@ void Ripper::LoadICMFile(HANDLE hf, DWORD start, DWORD end)
 	}
 	///////////////
 
-	OVERLAPPED bytesread, byteswrite;
+	OVERLAPPED bytesread{}, byteswrite{};
 	DWORD currentpoint;
 
 	bytesread.OffsetHigh = 0;
@@ -452,11 +452,11 @@ void Ripper::GetPasswordData(HANDLE hf)
 		version = releases[BC10];
 	}
 
-	BYTE Ccryptvalue;
-	char Level7Crypt[(PASSWORDLENGTH + 1)];
-	char Level7Plain[(PASSWORDLENGTH + 1)];
+	BYTE Ccryptvalue = 0;
+	char Level7Crypt[(PASSWORDLENGTH + 1)]{};
+	char Level7Plain[(PASSWORDLENGTH + 1)]{};
 
-	OVERLAPPED bytesread;
+	OVERLAPPED bytesread{};
 	bytesread.OffsetHigh = 0;
 	bytesread.Offset = version.addrPASSWORDREC + (7 * PASSWORDLENGTH);
 
@@ -499,9 +499,9 @@ void Ripper::GetPasswordData(HANDLE hf)
 	{
 		sstr << "Accounts-" << "\r\n" << left << setw(24) << "Username:" << setw(24) << "Password:" << "\r\n";
 
-		char Account0User[(ACCOUNTUSERNAMELENGTH + 1)];
-		char Account0CryptPass[(ACCOUNTPASSWORDLENGTH + 1)];
-		char Account0PlainPass[(ACCOUNTPASSWORDLENGTH + 1)];
+		char Account0User[(ACCOUNTUSERNAMELENGTH + 1)]{};
+		char Account0CryptPass[(ACCOUNTPASSWORDLENGTH + 1)]{};
+		char Account0PlainPass[(ACCOUNTPASSWORDLENGTH + 1)]{};
 
 		DWORD adrAcount0User = version.addrACCOUNTREC + version.offsetACCOUNTUSER;
 		DWORD adrAccount0CryptPass = version.addrACCOUNTREC + version.offsetACCOUNTPASSWORD;
