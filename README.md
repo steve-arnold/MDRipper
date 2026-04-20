@@ -3,7 +3,8 @@
 
 ## Description
 This is a Microsoft Windows program to extract Level 7 (admin) username and password data from an Ericsson/Aastra MD110 PABX.
-It works by decoding the data backup file for LIM 1 so physical access is needed to obtain this file. <br>
+MDRipper can work on files MD110 releases from BC8 to BC13 (Marketed as MX-One Telephony Switch, TSW)
+It works using the data backup file for LIM 1 (L001) or a disk image file of the HDU, so physical access to the system is required.<br>
 
 ## Source code
 
