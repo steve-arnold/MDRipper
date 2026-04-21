@@ -1,5 +1,5 @@
 # MDRipper
-![Screenshot ripper 2023-01-06 212415](https://user-images.githubusercontent.com/59138188/211104555-468505eb-83bb-49e6-826c-de8a2d7086fb.png)
+<img width="552" height="472" alt="Capture" src="https://github.com/user-attachments/assets/fa7f7f76-6b58-4bef-a4c9-7529ee429bce" />
 
 ## Description
 This is a Microsoft Windows program to extract Level 7 (admin) username and password data from an Ericsson/Aastra MD110 PABX.
