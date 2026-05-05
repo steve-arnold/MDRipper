@@ -366,9 +366,10 @@ Ripper::Ripper(Edit* pEdit)
 	releases[BC11] = versionDATA(string("ICM     10/CAA 111 445/01"), 0x197, 0x549, 0x5d1, 0x55, 0x0c, 0x40); // bc11, 12 & 13
 }
 
+// if we match ICM followed by PFM, we have the complete ICM data block which contains the username/password data
 std::vector<MatchPair>  Ripper::GetICMCandidates(HANDLE hFile) {        
-    const char patternPFM[8] = { ' ', ' ', ' ', ' ', 'M', ' ', 'P', 'F' };
-    const char patternICM[8] = { ' ', ' ', ' ', ' ', 'M', ' ', 'I', 'C' };
+    const char patternPFM[8] = { ' ', ' ', ' ', ' ', 'M', ' ', 'P', 'F' };  // header for PFM data
+    const char patternICM[8] = { ' ', ' ', ' ', ' ', 'M', ' ', 'I', 'C' };	// header for ICM data
     std::vector<MatchPair> results;
     results.reserve(4);
 
